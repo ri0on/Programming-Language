@@ -1,0 +1,40 @@
+
+VOID main():{
+    int a = 1;
+    int b = 2;
+    While a < b:
+        If a < b : a + b; Else : a - b;
+}
+
+func
+--init
+----type - void
+----name - main
+----args
+--body
+----var
+------type-int
+------name-a
+------eq-LIT-1
+----var
+------type-int
+------name-b
+------eq-LIT-2
+----while
+------COND
+--------LESS
+----------a
+----------b
+------BODY
+--------IF
+----------LESS
+------------a
+------------b
+----------TRUE
+------------SUM
+--------------a
+--------------b
+----------FALSE
+------------SUB
+--------------a
+--------------b

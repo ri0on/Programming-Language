@@ -1,0 +1,2 @@
+
+VOID main():{a+b;c+b;}
