@@ -75,14 +75,14 @@ map<enum oper_type, string> enum_names = {
 
 vector<pair<regex, enum oper_type>> patterns = {
     {regex(R"(\s*(INT|CHAR|VOID)\s+(\w+)\s*(\(\w*\))\s*(:\{)\s*(.*)(\}))"), FUNC},
-    {regex(R"(\s*(While)\s+(.*?)\s*(:)\s*(.*))"), WHILE}, 
-    {regex(R"(\s*(If)\s+(.*?)\s*(:)\s*(.*?)\s+(Else)\s*(:)\s*(.*))"), IF}, // if условие : тело Else : тело
+    {regex(R"(\s*(While)\s+(.*?)\s*(:\()\s*(.*)(\)))"), WHILE}, 
+    {regex(R"(\s*(If)\s+(.*?)\s*(:\[)\s*(.*?)(\])\s+(Else)\s*(:\[)\s*(.*)(\]))"), IF}, // if условие : тело Else : тело
     {regex(R"(\s*([^;]+);\s*([\s\S]*))"), BODY},
     {regex(R"(\s*(.+)\s*[<]\s*(.+))"), LESS},//проблема с порядком действий
     {regex(R"(\s*(INT|CHAR|VOID)\s+(\w+)\s*(=)\s*(.+))"), VAR}, 
     {regex(R"(\s*(.+)\s*[+]\s*(.+))"), SUM},
     {regex(R"(\s*(.+)\s*[-]\s*(.+))"), SUB},
-    {regex(R"(\s*(INT|CHAR|VOID)\s+(\w+)\s*(\[\s*\d+\s*\]))"), MASS},
+    {regex(R"(\s*(INT|CHAR|VOID)\s+(\w+)\s*(\[\s*\d+\s*\]))"), MASS}, 
     {regex(R"(\w+)"), LIT}
 };
 
@@ -149,7 +149,7 @@ struct graph AST(string str){
     struct graph G;
     for(pair p : patterns){
         smatch found;
-        if(regex_match(str, found, p.first)){
+        if(regex_match(str, found, p.first)){//все же search
             vector<string> operands = analyze({str, p.second}, found);
             if(operands.size()<=1){
                 G.value = operands[0];
@@ -189,7 +189,7 @@ void printAST(struct graph AST){
 int main(){
     string str; // Чтение из файла code.txt
 
-    ifstream file("test.txt"); // a + b + c problem
+    ifstream file("code.txt"); 
     if (!file) {
         cerr << "Cannot open file\n";
         return 1;
@@ -209,3 +209,8 @@ int main(){
     printAST(G);
 
 }
+
+
+
+//regex_match — проверяет, соответствует ли регулярке вся строка целиком, от первого символа до последнего.
+//regex_search — проверяет, есть ли где-нибудь внутри строки подстрока, соответствующая регулярке (не обязательно вся строка).

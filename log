@@ -1,0 +1,43 @@
+PROGRAM
+- .
+FUNC
+- - VOID main():{    int a = 1;    int b = 2;    While a < b:        If a < b : a + b Else : a - b}
+- - - VOID
+- - - main
+- - -
+LESS
+- - - int a = 1;    int b = 2;    While a < b:        If a < b : a + b Else : a - b
+LESS
+- - - - int a = 1;    int b = 2;    While a < b:        If a
+- - - - -
+- - - - -
+SUM
+- - - - b : a + b Else : a - b
+- - - - -
+SUB
+- - - - - b Else : a - b
+- - - - - -
+- - - - - - b
+
+VOID main():
+    int a = 1;
+    int b = 2;
+    While a < b:
+        If a < b : a + b Else : a - b
+
+
+func
+--init
+----type - void
+----name - main
+----args
+--body
+----var
+------type-int
+------name-a
+?-----eq
+--------LIT
+----------1
+
+----var
+----while

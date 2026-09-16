@@ -2,8 +2,9 @@
 VOID main():{
     int a = 1;
     int b = 2;
-    While a < b:
-        If a < b : a + b; Else : a - b;
+    While a < b:(
+        If a < b :[ a + b; Else : a - b;]
+    )
 }
 
 func
