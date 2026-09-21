@@ -1,29 +1,38 @@
-PROGRAM
+- PROGRAM
 - .
-FUNC
-- - VOID main():{    int a = 1;    int b = 2;    While a < b:        If a < b : a + b Else : a - b}
-- - - VOID
-- - - main
-- - -
-LESS
-- - - int a = 1;    int b = 2;    While a < b:        If a < b : a + b Else : a - b
-LESS
-- - - - int a = 1;    int b = 2;    While a < b:        If a
-- - - - -
-- - - - -
-SUM
-- - - - b : a + b Else : a - b
-- - - - -
-SUB
-- - - - - b Else : a - b
+- - FUNC
+- - VOID main():{    int a = 1;    int b = 2;    While a < b:(        If a < b :[ a + b; Else : a - b;]    )}
+- - - - - - VOID
+- - - - - - main
 - - - - - -
-- - - - - - b
-
-VOID main():
-    int a = 1;
-    int b = 2;
-    While a < b:
-        If a < b : a + b Else : a - b
+- - - BODY
+- - - int a = 1;    int b = 2;    While a < b:(        If a < b :[ a + b; Else : a - b;]    )
+- - - - - - - - int a = 1;
+- - - - BODY
+- - - - int b = 2;    While a < b:(        If a < b :[ a + b; Else : a - b;]    )
+- - - - - - - - - - int b = 2;
+- - - - - WHILE
+- - - - - While a < b:(        If a < b :[ a + b; Else : a - b;]    )
+- - - - - - LESS
+- - - - - - a < b
+- - - - - - - - - - - - - - a
+- - - - - - - - - - - - - - b
+- - - - - - BODY
+- - - - - - If a < b :[ a + b; Else : a - b;]
+- - - - - - - LESS
+- - - - - - - a < b
+- - - - - - - BODY
+- - - - - - - - SUM
+- - - - - - - - b :[ a + b
+- - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - b
+- - - - - - - BODY
+- - - - - - - Else : a - b;]
+- - - - - - - - SUB
+- - - - - - - - Else : a - b
+- - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - b
+- - - - - - - - - - - - - - - -
 
 
 func
