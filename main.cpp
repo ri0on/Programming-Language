@@ -54,6 +54,7 @@ enum oper_type{
     PROGRAM
 };
 
+
 struct graph{
     struct graph* parent;
     vector<struct graph> children;
@@ -236,14 +237,9 @@ std::vector<CFG> parse(graph G){
     return funcs;
 }
 
-//lvl 1     l11 l12 l13
-//          / \   \
-//lvl 2 l111 l112 l121
-//        /   /
 
 void printCFG(CFG *cfg){
     // PlantUML
-    //cfg1 -> cfg2 ->cfg3_cfg3.1 ->cfg4 -> cfg1
     ofstream out("CFG.puml");
 
     stack<CFG*> id;
@@ -251,55 +247,32 @@ void printCFG(CFG *cfg){
     id.push(cfg);
     out << "@startuml\n";
     out << "state \"" << id.top()->body << "\" as n" << id.top() << "\n";
-    while(!id.empty()/*temp->link != nullptr*/){
+    while(!id.empty()){
         temp = id.top();
         temp->valid = USED;
         id.pop();
 
-
         if(temp->link != cfg && temp->link->valid != USED){
             if(temp->link->valid == UNUSED){
                 out << "state \"" << temp->link->body << "\" as n" << temp->link << "\n";
-                out << "n" << temp << "--> n" << temp->link << "\n";
                 temp->link->valid = SEEN;
+                id.push(temp->link);
             }
-            else out << "n" <<temp << "--> n" << temp->link << "\n";
-            id.push(temp->link);
         }
-        /*else if(temp->link == cfg){
-            out << "state \"" << temp->link->body << "\" as n" << temp->link << "\n";
-            out << temp << "-->" << temp->link << "\n";
-        }*/
+        out << "n" << temp << "--> n" << temp->link << "\n";
 
         if(temp->sec_link != nullptr && temp->sec_link->valid != USED) {
             if(temp->sec_link->valid == UNUSED){
                 out << "state \"" << temp->sec_link->body << "\" as n" << temp->sec_link << "\n";
-                out << "n" << temp << "--> n" << temp->sec_link << "\n";
                 temp->sec_link->valid = SEEN;
+                id.push(temp->sec_link);
             }
-            else out << "n" << temp << "--> n" << temp->sec_link << "\n";
-            id.push(temp->sec_link);
+            out << "n" << temp << "--> n" << temp->sec_link << "\n";
         }
-        // pretemp = temp;
-        // temp = pretemp->link;
-        // out << "state \"" << temp->body << "\" as " << temp << "\n";
-        // out << pretemp << "-->" << temp << "\n";
-        // if(pretemp->sec_link != nullptr){
-        //     CFG* sec_temp = pretemp->sec_link;
-        //     out << "state \"" << sec_temp->body << "\" as " << sec_temp << "\n";
-        //     out << pretemp << "-->" << sec_temp << "\n"; //вопрос равна ли ссылка false ссылке true, пока приму что да.
-        //     if(temp->link != nullptr)
-        //         out << sec_temp << "-->" << temp->link << "\n";
-        // }
     }
     out << "@enduml\n";
 }
 
-    //     if
-    //    /  \
-    // true  false  
-    //   \    /
-    //    ...
 
 int main(){
     string str; // Чтение из файла code.txt
@@ -311,7 +284,7 @@ int main(){
     }
 
     string line;
-    while (getline(file, line)){ // проблема с многострочностью
+    while (getline(file, line)){
         str+=line;
     }
 
