@@ -1,4 +1,5 @@
 *.exe
+*.o
 CFG.puml
 test.txt
 log
