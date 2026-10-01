@@ -12,12 +12,16 @@ enum val{
 class CFG{
     private:
         std::string body;
+        oper_type type;//.....
         val valid = UNUSED;
-        CFG parse_DFS(AST G);
+        static CFG* parse_DFS(AST G);
+        static std::pair<CFG*, CFG*> analyze_node(AST g);
     public:
         CFG *link, *sec_link;
-        std::vector<CFG> parse(AST G);
+        static std::vector<CFG*> parse(AST G);
         CFG(std::string str = "", CFG *l = nullptr, CFG *sl = nullptr)
             : body(str), link(l), sec_link(sl) {}
         void printCFG();
+        void setBody(std::string str);
+        void setType(oper_type type);
 };

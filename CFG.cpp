@@ -1,29 +1,72 @@
 #include "CFG.hpp"
+#include "AST.hpp"
 #include <stack>
 #include <fstream>
 
-CFG CFG::parse_DFS(AST G){
-    std::stack<AST> graphs;
-    //std::queue<graph>
-    CFG *cfg_last;
-    graphs.push(G);
-    while(!graphs.empty()){
-        AST tmp = graphs.top();
-
-        //CFG* current = analyze(tmp);
-        //append(cfg_last, current);
-        //cfg_last = current;
-
-        graphs.pop();
-        for(auto& gr: tmp.children)
-            graphs.push(gr);
-    }
-    return {};
+void CFG::setBody(std::string str){
+    body = str;
 }
 
-std::vector<CFG> CFG::parse(AST G){
-    std::vector<CFG> funcs;
-    for(auto& func: G.children){
+std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
+    CFG* elem, *end;
+    switch(g.getType()){
+        case IF: {
+            elem = new CFG();
+            elem->setType(IF);
+            elem->setBody(g.children[0].getValue());
+            end = new CFG();
+            end->setBody("MERGE");
+            std::pair<CFG*, CFG*> tp = analyze_node(g.children[1]);
+            std::pair<CFG*, CFG*> ep = analyze_node(g.children[2]);
+            elem->link = tp.first;
+            elem->sec_link = ep.first;
+            tp.second->link = end;
+            ep.second->link = end;
+            break;
+        } 
+        case WHILE: {break;}
+        default: {
+            elem = new CFG();
+            elem->setBody(g.getValue());
+            elem->setType(g.getType());
+            end = elem;
+        } 
+    }    
+    return {elem, end};
+}
+
+void append(CFG* prev, CFG* next){
+    prev->link = next;
+}
+
+CFG* CFG::parse_DFS(AST G){
+    std::stack<AST> graphs;
+    //std::queue<graph>
+    CFG* start = new CFG(G.getValue());
+
+    CFG *cfg_last = start;
+
+    for(auto it = G.children.rbegin(); it != G.children.rend(); ++it){
+            if (!(*it).getVisited()) graphs.push(*it);
+        }
+
+    while(!graphs.empty()){
+        AST tmp = graphs.top();
+        graphs.pop();
+
+        std::pair<CFG*,CFG*> p = analyze_node(tmp);
+        append(cfg_last, p.first);
+        cfg_last = p.second;
+            
+    }
+
+    cfg_last->link = start;
+    return start;
+}
+
+std::vector<CFG*> CFG::parse(AST G){// для функций
+    std::vector<CFG*> funcs;
+    for(AST func: G.children){
         funcs.push_back(parse_DFS(func));
     }
     return funcs;
@@ -63,3 +106,14 @@ void CFG::printCFG(){
     }
     out << "@enduml\n";
 }
+
+void CFG::setType(oper_type type){
+    this->type = type;
+}
+
+//AST, написать код который будет подменивать имена переменных регситрами(временные регистры, освобождение регистров) и размапить их
+
+
+
+
+

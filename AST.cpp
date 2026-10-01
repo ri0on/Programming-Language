@@ -88,6 +88,8 @@ std::vector<std::string> AST::analyze(std::pair<std::string, oper_type> p, std::
     return operands; 
 }
 
+AST::AST(){}
+
 AST::AST(std::string str){
     for(const auto& p : patterns){
         std::smatch found;
@@ -111,13 +113,35 @@ AST::AST(std::string str){
 }
 
 void AST::printAST(int counter){
-
-    for(int i=0; i<counter; i++) std::cout<<"- ";
-    if(children.size()>0) std::cout<<enum_names.at(type)<<std::endl;
+    std::cout<<type<<std::endl;
+    if(type==61){
+        std::cout<<123<<std::endl;
+    }
+    std::cout<<enum_names.at(type)<<" : ";
     
     for(int i=0; i<counter; i++) std::cout<<"- ";
     std::cout<<value<<std::endl;
     for(auto& gr: children){
         gr.printAST(counter+1);
     }
+}
+
+oper_type AST::getType(){
+    return type;
+}
+
+void AST::setType(oper_type type){
+    this->type = type;
+}
+
+std::string AST::getValue(){
+    return value;
+}
+
+bool AST::getVisited(){
+    return visited;
+}
+
+void AST::setValue(std::string inside){
+    this->value = inside;
 }

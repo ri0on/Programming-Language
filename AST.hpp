@@ -45,6 +45,18 @@ enum oper_type {NULL_OP,
     LIT,
     
     PROGRAM
+
+    // FOR
+    // BREAK
+    // SWITCH
+    // GOTO
+
+    // for(){
+    //     for(){
+    //         if(...) goto end;
+    //     }
+    // }
+    // end:;
 };
 
 class AST{
@@ -52,7 +64,7 @@ class AST{
         AST* parent = nullptr;
         oper_type type;
         std::string value;
-
+        bool visited;
         static const std::map<oper_type, std::string> enum_names;
         static const std::vector<std::pair<std::regex,oper_type>> patterns;
         
@@ -60,7 +72,12 @@ class AST{
 
     public:
         std::vector<AST> children;
+        AST();
         AST(std::string str);// был AST в main.cpp
-
+        oper_type getType();
+        void setType(oper_type type);
+        std::string getValue();
+        void setValue(std::string inside);
         void printAST(int counter = 0);
+        bool getVisited();
 };

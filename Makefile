@@ -1,4 +1,5 @@
-all: app
+all: clean app
+	./app
 
 app: main.o AST.o CFG.o
 	g++ -static main.o AST.o CFG.o -o app -O3
