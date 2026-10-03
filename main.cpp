@@ -3,9 +3,45 @@
 #include <vector>
 #include "AST.hpp"
 #include "CFG.hpp"
+#include "Lexer.hpp"
 using namespace std;
 
+string tokenTypeToString(TokenType type) {
+    switch (type) {
+        case TokenType::INT:        return "INT";
+        case TokenType::CHAR:       return "CHAR";
+        case TokenType::VOID:       return "VOID";
+        case TokenType::IF:         return "IF";
+        case TokenType::WHILE:      return "WHILE";
+        case TokenType::RETURN:     return "RETURN";
 
+        case TokenType::PLUS:       return "PLUS";
+        case TokenType::MINUS:      return "MINUS";
+        case TokenType::MUL:        return "MUL";
+        case TokenType::DIV:        return "DIV";
+        case TokenType::ASSIGN:     return "ASSIGN";
+
+        case TokenType::XOR:        return "XOR";
+        case TokenType::AND:        return "AND";
+        case TokenType::OR:         return "OR";
+        case TokenType::CMP:        return "CMP";
+        case TokenType::LESS:       return "LESS";
+        case TokenType::MORE:       return "MORE";
+
+        case TokenType::IDENTIFIER: return "IDENTIFIER";
+        case TokenType::NUMBER:     return "NUMBER";
+
+        case TokenType::SEMICOLON:  return "SEMICOLON";
+        case TokenType::COMMA:      return "COMMA";
+        case TokenType::LPAREN:     return "LPAREN";
+        case TokenType::RPAREN:     return "RPAREN";
+        case TokenType::LBRACE:     return "LBRACE";
+        case TokenType::RBRACE:     return "RBRACE";
+        case TokenType::COLON:      return "COLON";
+    }
+
+    return "UNKNOWN";
+}
 
 int main(){
     string str; // Чтение из файла code.txt
@@ -21,7 +57,7 @@ int main(){
         str+=line;
     }
 
-   AST G(str);
+   //AST G(str);
 
     // AST *G = new AST();
 
@@ -74,9 +110,18 @@ int main(){
     
     
 
-    //G.printAST();
-    //vector<CFG*> cfg = CFG::parse(G);
+    // G.printAST();
+    // vector<CFG*> cfg = CFG::parse(G);
 
-    //cfg[0]->printCFG();
+    // cfg[0]->printCFG();
+
+    Lexer lex;
+    vector<Token> toks = lex.tokenize(str);
+    for(auto& i : toks){
+        cout << tokenTypeToString(i.type) << " : " << i.value << endl; 
+    }
+
 }
+
+
 

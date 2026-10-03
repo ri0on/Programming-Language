@@ -62,9 +62,10 @@ enum oper_type {NULL_OP,
 class AST{
     private:
         AST* parent = nullptr;
-        oper_type type;
+        oper_type type = NULL_OP;
+        TokenType dataType;
         std::string value;
-        bool visited;
+        bool visited = false;
         static const std::map<oper_type, std::string> enum_names;
         static const std::vector<std::pair<std::regex,oper_type>> patterns;
         
@@ -76,6 +77,7 @@ class AST{
         AST(std::string str);// был AST в main.cpp
         oper_type getType();
         void setType(oper_type type);
+        void setDataType(TokenType type);
         std::string getValue();
         void setValue(std::string inside);
         void printAST(int counter = 0);

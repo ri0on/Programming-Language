@@ -1,8 +1,6 @@
 
 VOID main():{
-    int a = 1;
-    int b = 2;
-    If a < b :[ a + b; Else : a - b;]
+    INT a = 1;
 }
 
 

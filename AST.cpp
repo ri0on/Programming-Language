@@ -2,6 +2,7 @@
 #include <iostream>
 
 const std::map<oper_type, std::string> AST::enum_names{
+        {NULL_OP, "NULL_OP"},
         {BODY, "BODY"},
         {SUM, "SUM"},
         {SUB, "SUB"},
@@ -113,10 +114,6 @@ AST::AST(std::string str){
 }
 
 void AST::printAST(int counter){
-    std::cout<<type<<std::endl;
-    if(type==61){
-        std::cout<<123<<std::endl;
-    }
     std::cout<<enum_names.at(type)<<" : ";
     
     for(int i=0; i<counter; i++) std::cout<<"- ";
@@ -132,6 +129,10 @@ oper_type AST::getType(){
 
 void AST::setType(oper_type type){
     this->type = type;
+}
+
+void AST::setDataType(TokenType type){
+    this->dataType = type;
 }
 
 std::string AST::getValue(){
