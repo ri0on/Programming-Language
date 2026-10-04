@@ -111,6 +111,19 @@ void CFG::setType(oper_type type){
     this->type = type;
 }
 
+oper_type CFG::getType(){return this->type;}
+
+std::string CFG::getOp1(){
+    return this->op1;
+}
+std::string CFG::getOp2(){
+    return this->op2;
+}
+
+std::string CFG::getOp3(){
+    return this->op3;
+}
+
 //AST, написать код который будет подменивать имена переменных регситрами(временные регистры, освобождение регистров) и размапить их
 
 

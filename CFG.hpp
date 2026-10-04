@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "AST.hpp"
+#include "Token.hpp"
 
 enum val{
     USED,
@@ -12,6 +13,9 @@ enum val{
 class CFG{
     private:
         std::string body;
+        std::string op1;
+        std::string op2;
+        std::string op3;// enum
         oper_type type;//.....
         val valid = UNUSED;
         static CFG* parse_DFS(AST G);
@@ -24,4 +28,8 @@ class CFG{
         void printCFG();
         void setBody(std::string str);
         void setType(oper_type type);
+        oper_type getType();
+        std::string getOp1();
+        std::string getOp2();
+        std::string getOp3();
 };

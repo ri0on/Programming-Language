@@ -4,6 +4,7 @@
 #include <map>
 #include <regex>
 #include <utility>
+#include "Token.hpp"
 
 enum oper_type {NULL_OP,
 
@@ -72,7 +73,7 @@ class AST{
         std::vector<std::string> analyze(std::pair<std::string, oper_type> p, std::smatch pattern);
 
     public:
-        std::vector<AST> children;
+        std::vector<AST> children; // параметры - дети функции
         AST();
         AST(std::string str);// был AST в main.cpp
         oper_type getType();

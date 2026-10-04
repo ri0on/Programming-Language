@@ -7,21 +7,23 @@ class Parse{
         jump//...
     };
 
-    std::vector<std::pair<std::string, instr_type>> dict;
+    std::vector<std::pair<instr_type, std::string>> dict;
 
-    struct instr{
-        enum instr_type type;
-        std::vector<std::string> operands;
-    };
-    typedef std::vector<instr> block;
+    // struct instr{
+    //     enum instr_type type;
+    //     std::vector<std::string> operands;
+    // };
+    typedef std::vector<std::string> block;
 
     std::vector<block> blocks;
 
     std::vector<std::string> assemble;
 
-    block IF();
+    block IF(CFG* cfg);
 
-    block WHILE();
+    block WHILE(CFG* cfg);
+
+    block BLOCK(CFG* cfg);
 
     public:
     Parse(std::vector<CFG*> c);

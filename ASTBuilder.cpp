@@ -21,16 +21,17 @@ AST ASTBuilder::buildFunction(){
     AST func;
     func.setType(FUNC);
     if(tokens[pos].type == TokenType::INT){
-        func.consume(TokenType::INT);
-    } else if(tokens[pos].type == TokenType::VOID){
-        consume(TokenType::VOID);
+        func.setDataType(consume(TokenType::INT).type);
+    } else if(tokens[pos].type == TokenType::VOIDtype){
+        func.setDataType(consume(TokenType::VOID).type);
     } else if(tokens[pos].type == TokenType::CHAR){
-        consume(TokenType::CHAR);
+        func.setDataType(consume(TokenType::CHAR).type);
     } else throw std::runtime_error("Syntax error: unexpected type");
 
     Token func_name = consume(TokenType::IDENTIFIER);
 
     consume(TokenType::LPAREN);
+    struct para
     std::vector<Token> param_names; // надо представить AST узлом или структурой
     while(!check(TokenType::RPAREN)){
         if(tokens[pos].type == TokenType::INT){
