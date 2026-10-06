@@ -22,7 +22,7 @@ AST ASTBuilder::buildFunction(){
     func.setType(FUNC);
     if(tokens[pos].type == TokenType::INT){
         func.setDataType(consume(TokenType::INT).type);
-    } else if(tokens[pos].type == TokenType::VOIDtype){
+    } else if(tokens[pos].type == TokenType::VOID){
         func.setDataType(consume(TokenType::VOID).type);
     } else if(tokens[pos].type == TokenType::CHAR){
         func.setDataType(consume(TokenType::CHAR).type);
@@ -31,21 +31,40 @@ AST ASTBuilder::buildFunction(){
     Token func_name = consume(TokenType::IDENTIFIER);
 
     consume(TokenType::LPAREN);
-    struct para
-    std::vector<Token> param_names; // надо представить AST узлом или структурой
+
+    std::vector<AST> params; 
+    AST curr;
+    curr.setType(VAR);
     while(!check(TokenType::RPAREN)){
         if(tokens[pos].type == TokenType::INT){
-        consume(TokenType::INT);
+            curr.setDataType(TokenType::INT);
+            consume(TokenType::INT);
         } else if(tokens[pos].type == TokenType::VOID){
+            curr.setDataType(TokenType::VOID);
             consume(TokenType::VOID);
         } else if(tokens[pos].type == TokenType::CHAR){
+            curr.setDataType(TokenType::CHAR);
             consume(TokenType::CHAR);
         } else throw std::runtime_error("Syntax error: unexpected param type");
-        param_names.push_back(consume(TokenType::IDENTIFIER));
+        curr.setValue(consume(TokenType::IDENTIFIER).value);
+        func.children.push_back(curr);
+        if(check(TokenType::COLON))
+            consume(TokenType::COLON);
     }
     consume(TokenType::RPAREN);
 
+    consume(TokenType::LBRACE);
+    std::vector<AST> body = buildBlock(); 
 
+    for(auto& node : body){
+        func.children.push_back(node);
+    }
+    consume(TokenType::RBRACE);
+
+
+}
+
+std::vector<AST> ASTBuilder::buildBlock(){
 
 }
 
