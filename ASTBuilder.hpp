@@ -13,12 +13,18 @@ class ASTBuilder{
         Token consume(TokenType type); // Я ожидаю здесь именно такой токен. Если он есть — забираю его и двигаюсь дальше. Если нет — syntax error.
 
         AST buildFunction();          // отвечает только за функции(знает их грамматику)
-        std::vector<AST> buildBlock; // Читать инструкции одну за другой, пока блок не закончился. (пока не встретили '}':вызвать buildStatement())
-        AST buildStatement();       // Какая инструкция начинается с текущего токена?
+        std::vector<AST> buildBlock(); // Читать инструкции одну за другой, пока блок не закончился. (пока не встретили '}':вызвать buildStatement())
+        //AST buildStatement();       // Какая инструкция начинается с текущего токена?
         AST buildVar();            // знает только грамматику переменной
         AST buildIf();            // знает только структуру If
         AST buildWhile();        // знает только структуру While
-        AST buildExpression();  // отвечает только за выражения (1+1, a < b)  потом надо будет сделать полноценный порядок действий для больших выражений
+        AST buildReturn();      // знает только структуру Return
+        AST buildExpression(); // отвечает только за выражения (1+1, a < b)  потом надо будет сделать полноценный порядок действий для больших выражений
+        AST buildPrimary();   // отвечет за простейшие элементы для Expression
+        AST buildMulDiv();   // разбирает * и /
+        AST buildAddSub();  // разбирает + и -
+        AST buildComparison(); // разбирает сравнения
+        AST buildAssignment();// знает только структуру при изменении переменной которая уже было декларированна.
 
     public:
         ASTBuilder(const std::vector<Token>& tkns) :

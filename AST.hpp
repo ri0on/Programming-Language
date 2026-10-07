@@ -24,13 +24,10 @@ enum oper_type {NULL_OP,
     LESS,
     MORE,
 
-    // type
-    INT,
-    CHAR,
-    VOID,
 
     // variable
     VAR,
+    VAR_REF,
 
     // ctrl
     IF,

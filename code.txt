@@ -1,7 +1,6 @@
-INT a = 7;
+
 VOID main():{
-    1+2;
-    3<3;
+    INT a = 1;
 }
 
 

@@ -41,6 +41,18 @@ Parse::block Parse::WHILE(CFG* cfg){
 
 }
 
+int Parse::counter = 1;
+std::string Parse::regInc(){
+    return std::to_string(counter++);
+}
+std::string Parse::mapReg(std::string op){
+    if(regs.find(op) == regs.end()){
+        return regs[op];
+    } else{
+        regs[op] = "r" + regInc();
+        return regs[op];
+    }
+}
 
 Parse::block Parse::BLOCK(CFG* cfg){
     //  VAR
@@ -48,20 +60,31 @@ Parse::block Parse::BLOCK(CFG* cfg){
     //  SUM
     std::string res;
     switch(cfg->getType()){
-        SUM: {
+        case SUM: {
             std::string op1 = cfg->getOp1();
             std::string op2 = cfg->getOp2();
-            std::string rg1 = "";//mapReg(op1);
-            std::string rg2 = "";//mapReg(op2);
-            std::string rg = "";//regInc();
-            res = "add "+rg+","+rg1+","+rg2;
+            std::string rg1 = mapReg(op1);
+            std::string rg2 = mapReg(op2);
+            std::string rg = regInc();
+            res = "add " + rg + "," + rg1 + "," + rg2;
             break;
         }
         VAR: {
+
+    //         ____BODY____
+    //         / |        \
+    //     VAR   |          SUM
+    // int a 5  convert(a)    a   STRING
+
+
+    //         int a = rg1
+    //         a + string
+    //         move rg1 --> rg_a
+    
             std::string op1 = cfg->getOp1();
             std::string op2 = cfg->getOp2();
-            std::string rg1 = "";//mapReg(op2);
             std::string op3 = cfg->getOp3();
+            std::string rg1 = "";//mapReg(op2);
             std::string rg2 = "";//mapReg(op3);
             res = "move "+rg1+","+rg2;
             break;

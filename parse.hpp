@@ -1,6 +1,9 @@
 #pragma once
 #include "CFG.hpp"
+#include <map>
+
 class Parse{
+
     private:
     enum instr_type{
         add,
@@ -15,9 +18,14 @@ class Parse{
     // };
     typedef std::vector<std::string> block;
 
+    static int counter;
+    static std::map<std::string, std::string> regs;
+    static std::string regInc();
+    static std::string mapReg(std::string op);
+
     std::vector<block> blocks;
 
-    std::vector<std::string> assemble;
+    std::vector<std::string> assemble;//файл
 
     block IF(CFG* cfg);
 
@@ -27,4 +35,5 @@ class Parse{
 
     public:
     Parse(std::vector<CFG*> c);
+    
 };
