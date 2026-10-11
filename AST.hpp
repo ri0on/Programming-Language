@@ -41,6 +41,8 @@ enum oper_type {NULL_OP,
     MASS,
 
     LIT,
+    //return
+    RETURN,
     
     PROGRAM
 

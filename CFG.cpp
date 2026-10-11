@@ -10,6 +10,23 @@ void CFG::setBody(std::string str){
 std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
     CFG* elem, *end;
     switch(g.getType()){
+        case BODY: {
+             if (g.children.empty()) {
+                throw std::runtime_error("Empty BODY is not supported yet");
+            }
+
+            std::pair<CFG*, CFG*> begin_end = analyze_node(g.children[0]);
+            CFG* local_end = begin_end.second;
+            elem = begin_end.first;
+
+            for(size_t i = 1; i < g.children.size(); i++){
+                std::pair<CFG*, CFG*> child = analyze_node(g.children[i]);
+                local_end->link = child.first;
+                local_end = child.second;
+            }
+            end = local_end;
+            break;
+        }
         case IF: {
             elem = new CFG();
             elem->setType(IF);

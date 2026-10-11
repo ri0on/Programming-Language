@@ -156,7 +156,83 @@ AST ASTBuilder::buildVar(){
 }
 
 AST ASTBuilder::buildIf(){
-    
+    AST If;
+    consume(TokenType::IF);
+    If.setType(IF);
+    If.children.push_back(buildExpression());
+    consume(TokenType::COLON);
+    consume(TokenType::LBRACE);
+    std::vector<AST> nodes_tr = buildBlock();
+    consume(TokenType::RBRACE);
+/*
+     ______IF_______
+    /      |        \
+child[0]  child[1]  child[2]
+  /         |           |
+cond       true       flase
+
+*/  
+    AST tr;
+    tr.setType(BODY);
+    for(auto& node : nodes_tr){
+        tr.children.push_back(node);
+    }
+    If.children.push_back(tr);
+
+    consume(TokenType::ELSE);
+    consume(TokenType::COLON);
+    consume(TokenType::LBRACE);
+    std::vector<AST> nodes_fl = buildBlock();
+    consume(TokenType::RBRACE);
+    AST fl;
+    fl.setType(BODY);
+    for(auto& node : nodes_fl){
+        fl.children.push_back(node);
+    }
+    If.children.push_back(fl);
+    return If;
+}
+
+AST ASTBuilder::buildWhile(){
+    AST While;
+    consume(TokenType::WHILE);
+    While.setType(WHILE);
+    While.children.push_back(buildExpression());
+    consume(TokenType::COLON);
+    consume(TokenType::LBRACE);
+    std::vector<AST> nodes = buildBlock();
+    consume(TokenType::RBRACE);
+    AST body;
+    body.setType(BODY);
+    While.children.push_back(body);
+    for(auto& node : nodes){
+        body.children.push_back(node);
+    }
+    return While;
+}
+
+AST ASTBuilder::buildReturn(){
+    AST Return;
+    consume(TokenType::RETURN);
+    Return.setType(RETURN);
+    consume(TokenType::COLON);
+    Return.children.push_back(buildExpression());
+    return Return;
+}
+
+AST ASTBuilder::buildAssignment(){
+    AST assignment;
+    assignment.setType(VAR_REF);
+    consume(TokenType::IDENTIFIER);
+    consume(TokenType::ASSIGN);
+    if(check(TokenType::IDENTIFIER)){
+        consume(TokenType::IDENTIFIER);
+    } else if(check(TokenType::NUMBER)){
+        consume(TokenType::NUMBER);
+    } else if(check(TokenType::SYMB)){
+        consume(TokenType::SYMB);
+    }
+
 }
 
 std::vector<AST> ASTBuilder::buildBlock(){

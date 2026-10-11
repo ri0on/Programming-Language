@@ -28,6 +28,7 @@ enum class TokenType{
     // identifiers / literals
     IDENTIFIER,
     NUMBER,
+    SYMB,
     // punctuation
     SEMICOLON,  // ;
     COMMA,      // ,
