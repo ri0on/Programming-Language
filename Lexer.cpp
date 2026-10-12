@@ -1,4 +1,5 @@
 #include <cctype>
+#include <stdexcept>
 #include "Lexer.hpp"
 
 Token Lexer::assign_kw(const std::string &str){
@@ -133,6 +134,14 @@ std::vector<Token> Lexer::tokenize(const std::string &code){
             }
             curr.type = TokenType::NUMBER;
             curr.value = container;
+        } else if(code[i] == '\''){
+            i++;
+            if(i >= code.size()){ throw  std::runtime_error("Unclosed char literal"); }
+            char symb = code[i++];
+            if(i >= code.size() || code[i] != '\''){ throw std::runtime_error("Invalid char literal"); }
+            i++;
+            curr.type = TokenType::SYMB;
+            curr.value = symb;
         } else{
             if(code[i] == '=' && i + 1 < code.size() && code[i+1] == '='){
                 container = "==";
