@@ -2,8 +2,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <regex>
-#include <utility>
 #include "Token.hpp"
 
 enum oper_type {NULL_OP,
@@ -68,14 +66,10 @@ class AST{
         std::string value;
         bool visited = false;
         static const std::map<oper_type, std::string> enum_names;
-        static const std::vector<std::pair<std::regex,oper_type>> patterns;
-        
-        std::vector<std::string> analyze(std::pair<std::string, oper_type> p, std::smatch pattern);
-
     public:
+        
         std::vector<AST> children; // параметры - дети функции
         AST();
-        AST(std::string str);// был AST в main.cpp
         oper_type getType();
         void setType(oper_type type);
         void setDataType(TokenType type);
@@ -83,4 +77,5 @@ class AST{
         void setValue(std::string inside);
         void printAST(int counter = 0);
         bool getVisited();
+        static std::string getEnumName(oper_type type);
 };

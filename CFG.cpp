@@ -30,7 +30,7 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
         case IF: {
             elem = new CFG();
             elem->setType(IF);
-            elem->setBody(g.children[0].getValue());
+            elem->setBody(AST::getEnumName(IF));
             end = new CFG();
             end->setBody("MERGE");
             std::pair<CFG*, CFG*> tp = analyze_node(g.children[1]);
@@ -41,11 +41,24 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
             ep.second->link = end;
             break;
         } 
-        case WHILE: {break;}
+        case WHILE: {
+            elem = new CFG();
+            elem->setType(WHILE);
+            elem->setBody(AST::getEnumName(WHILE));
+            CFG* exit = new CFG();
+            exit->setBody("MERGE");
+            std::pair<CFG*, CFG*> body = analyze_node(g.children[1]);
+            elem->link = body.first;
+            elem->sec_link = exit;
+            body.second->link = elem;
+            end = exit;
+            break;
+        }
         default: {
             elem = new CFG();
-            elem->setBody(g.getValue());
-            elem->setType(g.getType());
+            oper_type type = g.getType();
+            elem->setType(type);
+            elem->setBody(AST::getEnumName(type));
             end = elem;
         } 
     }    

@@ -1,6 +1,18 @@
 
 VOID main():{
     INT a = 1;
+    INT b = 2;
+    INT c = 0;
+    If(a == b):{
+        c = a+b;
+    } Else:{
+        c = a-b;
+    }
+    While(a < b):{
+        a = b*3-2+a/c;
+        sb: a;
+    }
+    sb: c;
 }
 
 

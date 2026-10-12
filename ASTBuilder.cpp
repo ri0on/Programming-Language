@@ -1,5 +1,5 @@
 #include "ASTBuilder.hpp"
-
+#include <stdexcept>
 Token& ASTBuilder::current(){
     return tokens[pos];
 }
