@@ -28,6 +28,7 @@ enum oper_type {NULL_OP,
     // variable
     VAR,
     VAR_REF,
+    ASSIGN,
 
     // ctrl
     IF,

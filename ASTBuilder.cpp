@@ -29,14 +29,13 @@ AST ASTBuilder::buildFunction(){
         func.setDataType(consume(TokenType::CHAR).type);
     } else throw std::runtime_error("Syntax error: unexpected type");
 
-    Token func_name = consume(TokenType::IDENTIFIER);
-
+    func.setValue(consume(TokenType::IDENTIFIER).value);
     consume(TokenType::LPAREN);
 
     std::vector<AST> params; 
-    AST curr;
-    curr.setType(VAR);
     while(!check(TokenType::RPAREN)){
+        AST curr;
+        curr.setType(VAR);
         if(tokens[pos].type == TokenType::INT){
             curr.setDataType(TokenType::INT);
             consume(TokenType::INT);
@@ -49,11 +48,11 @@ AST ASTBuilder::buildFunction(){
         } else throw std::runtime_error("Syntax error: unexpected param type");
         curr.setValue(consume(TokenType::IDENTIFIER).value);
         func.children.push_back(curr);
-        if(check(TokenType::COLON))
-            consume(TokenType::COLON);
+        if(check(TokenType::COMMA))
+            consume(TokenType::COMMA);
     }
     consume(TokenType::RPAREN);
-
+    consume(TokenType::COLON);
     consume(TokenType::LBRACE);
     std::vector<AST> body = buildBlock(); 
 
@@ -82,6 +81,11 @@ AST ASTBuilder::buildPrimary(){
         AST expr = buildExpression();
         consume(TokenType::RPAREN);
         return expr;
+    } else if(check(TokenType::SYMB)){
+        node.setType(LIT);
+        node.setDataType(TokenType::SYMB);
+        node.setValue(consume(TokenType::SYMB).value);
+        return node;
     }
     else throw std::runtime_error("Syntax error: unexpected primary token");
 }
@@ -204,10 +208,10 @@ AST ASTBuilder::buildWhile(){
     consume(TokenType::RBRACE);
     AST body;
     body.setType(BODY);
-    While.children.push_back(body);
     for(auto& node : nodes){
         body.children.push_back(node);
     }
+    While.children.push_back(body);
     return While;
 }
 
@@ -217,28 +221,29 @@ AST ASTBuilder::buildReturn(){
     Return.setType(RETURN);
     consume(TokenType::COLON);
     Return.children.push_back(buildExpression());
+    consume(TokenType::SEMICOLON);
     return Return;
 }
 
 AST ASTBuilder::buildAssignment(){
     AST assignment;
-    assignment.setType(VAR_REF);
-    consume(TokenType::IDENTIFIER);
+    assignment.setType(ASSIGN);
+    AST var;
+    var.setDataType(TokenType::IDENTIFIER);
+    var.setType(VAR_REF);
+    var.setValue(consume(TokenType::IDENTIFIER).value);
+    assignment.children.push_back(var);
     consume(TokenType::ASSIGN);
-    if(check(TokenType::IDENTIFIER)){
-        consume(TokenType::IDENTIFIER);
-    } else if(check(TokenType::NUMBER)){
-        consume(TokenType::NUMBER);
-    } else if(check(TokenType::SYMB)){
-        consume(TokenType::SYMB);
-    }
-
+    AST node = buildExpression();
+    consume(TokenType::SEMICOLON);
+    assignment.children.push_back(node);
+    return assignment;
 }
 
 std::vector<AST> ASTBuilder::buildBlock(){
     std::vector<AST> nodes;
     while(!check(TokenType::RBRACE)){
-        if(check(TokenType::INT) || check(TokenType::CHAR)){
+        if(check(TokenType::INT) || check(TokenType::CHAR) || check(TokenType::VOID)){
             if(tokens[pos+2].type == TokenType::LPAREN){
                 nodes.push_back(buildFunction());
             }
@@ -262,4 +267,5 @@ AST ASTBuilder::build(){
     while(pos < tokens.size()){
         program.children.push_back(buildFunction()); // тут изменяется pos
     }
+    return program;
 }
