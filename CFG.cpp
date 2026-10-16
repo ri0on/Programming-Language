@@ -12,7 +12,11 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
     switch(g.getType()){
         case BODY: {
              if (g.children.empty()) {
-                throw std::runtime_error("Empty BODY is not supported yet");
+                elem = new CFG();
+                elem->setType(BODY);
+                elem->setBody(AST::getEnumName(BODY));
+                end = elem;
+                break;
             }
 
             std::pair<CFG*, CFG*> begin_end = analyze_node(g.children[0]);
@@ -20,6 +24,10 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
             elem = begin_end.first;
 
             for(size_t i = 1; i < g.children.size(); i++){
+                if(local_end == nullptr){
+                    end = nullptr;
+                    break;
+                }
                 std::pair<CFG*, CFG*> child = analyze_node(g.children[i]);
                 local_end->link = child.first;
                 local_end = child.second;
@@ -31,14 +39,27 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
             elem = new CFG();
             elem->setType(IF);
             elem->setBody(AST::getEnumName(IF));
-            end = new CFG();
-            end->setBody("MERGE");
+            CFG* merge = new CFG();
+            merge->setBody("MERGE");
+            bool has_continue = false;
             std::pair<CFG*, CFG*> tp = analyze_node(g.children[1]);
             std::pair<CFG*, CFG*> ep = analyze_node(g.children[2]);
-            elem->link = tp.first;
-            elem->sec_link = ep.first;
-            tp.second->link = end;
-            ep.second->link = end;
+             elem->link = tp.first;
+             elem->sec_link = ep.first;
+            if(tp.second != nullptr){
+                tp.second->link = merge;
+                has_continue = true;
+            }
+            if(ep.second != nullptr){
+                ep.second->link = merge;
+                has_continue = true;
+            }
+            if(has_continue){
+                end = merge;
+            } else{
+                delete merge;
+                end = nullptr;
+            }
             break;
         } 
         case WHILE: {
@@ -50,8 +71,18 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
             std::pair<CFG*, CFG*> body = analyze_node(g.children[1]);
             elem->link = body.first;
             elem->sec_link = exit;
-            body.second->link = elem;
+            if(body.second != nullptr){
+                body.second->link = elem;
+            }
+            
             end = exit;
+            break;
+        }
+        case RETURN: {
+            elem = new CFG();
+            elem->setType(RETURN);
+            elem->setBody(AST::getEnumName(RETURN));
+            end = nullptr;
             break;
         }
         default: {
@@ -59,9 +90,12 @@ std::pair<CFG*, CFG*> CFG::analyze_node(AST g){
             oper_type type = g.getType();
             elem->setType(type);
             elem->setBody(AST::getEnumName(type));
+            
+            
             end = elem;
         } 
-    }    
+    }
+    elem->setAST(g);    
     return {elem, end};
 }
 
@@ -81,6 +115,7 @@ CFG* CFG::parse_DFS(AST G){
         }
 
     while(!graphs.empty()){
+        if(cfg_last == nullptr) break;
         AST tmp = graphs.top();
         graphs.pop();
 
@@ -89,8 +124,6 @@ CFG* CFG::parse_DFS(AST G){
         cfg_last = p.second;
             
     }
-
-    cfg_last->link = start;
     return start;
 }
 
@@ -115,15 +148,17 @@ void CFG::printCFG(){
         temp = id.top();
         temp->valid = USED;
         id.pop();
-
-        if(temp->link != this && temp->link->valid != USED){//nullptr
+        if(temp->link != nullptr){
+            if(temp->link != this && temp->link->valid != USED){//nullptr
             if(temp->link->valid == UNUSED){
                 out << "state \"" << temp->link->body << "\" as n" << temp->link << "\n";
                 temp->link->valid = SEEN;
                 id.push(temp->link);
+                }
             }
+            out << "n" << temp << "--> n" << temp->link << "\n";
         }
-        out << "n" << temp << "--> n" << temp->link << "\n";
+        
 
         if(temp->sec_link != nullptr && temp->sec_link->valid != USED) {
             if(temp->sec_link->valid == UNUSED){
@@ -141,19 +176,25 @@ void CFG::setType(oper_type type){
     this->type = type;
 }
 
-oper_type CFG::getType(){return this->type;}
-
-std::string CFG::getOp1(){
-    return this->op1;
+AST CFG::getAST(){
+    return this->ast;
 }
-std::string CFG::getOp2(){
-    return this->op2;
+void CFG::setAST(AST g){
+    ast = g;
 }
 
-std::string CFG::getOp3(){
-    return this->op3;
-}
+// oper_type CFG::getType(){return this->type;}
 
+// std::string CFG::getIdent1(){
+//     return this->ident1;
+// }
+// std::string CFG::getIdent2(){
+//     return this->ident2;
+// }
+
+// oper_type CFG::getOp(){
+//     return this->op;
+// }
 //AST, написать код который будет подменивать имена переменных регситрами(временные регистры, освобождение регистров) и размапить их
 
 

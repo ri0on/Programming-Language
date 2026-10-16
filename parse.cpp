@@ -1,5 +1,5 @@
 #include "parse.hpp"
-
+#include <stdexcept>
 Parse::block Parse::IF(CFG* cfg){
     //      IF (COND)
     //     / \
@@ -41,7 +41,7 @@ Parse::block Parse::WHILE(CFG* cfg){
 
 }
 
-int Parse::counter = 1;
+int Parse::counter = 1;//singlton
 std::string Parse::regInc(){
     return std::to_string(counter++);
 }
@@ -58,52 +58,34 @@ Parse::block Parse::BLOCK(CFG* cfg){
     //  VAR
     //  LESS
     //  SUM
-    std::string res;
-    switch(cfg->getType()){
+    block res;
+    AST curr_ast = cfg->getAST();
+
+    switch(curr_ast.getType()){
         case SUM: {
-            std::string op1 = cfg->getOp1();
-            std::string op2 = cfg->getOp2();
+            std::string op1 = genExpression(curr_ast.children[0]);
+            std::string op2 = genExpression(curr_ast.children[1]);
             std::string rg1 = mapReg(op1);
             std::string rg2 = mapReg(op2);
             std::string rg = regInc();
-            res = "add " + rg + "," + rg1 + "," + rg2;
+            res.push_back(instr_dict.at(add) + " " + rg + "," + rg1 + "," + rg2);
             break;
         }
         VAR: {
-
-    //         ____BODY____
-    //         / |        \
-    //     VAR   |          SUM
-    // int a 5  convert(a)    a   STRING
-
-
-    //         int a = rg1
-    //         a + string
-    //         move rg1 --> rg_a
-    
-            std::string op1 = cfg->getOp1();
-            std::string op2 = cfg->getOp2();
-            std::string op3 = cfg->getOp3();
-            std::string rg1 = "";//mapReg(op2);
-            std::string rg2 = "";//mapReg(op3);
-            res = "move "+rg1+","+rg2;
+            std::string op1 = curr_ast.getValue();
+            std::string op2 = genExpression(curr_ast.children[0], res);
+            TokenType type = curr_ast.getDataType();
+            std::string rg1 = mapReg(op1);
+            std::string rg2 = mapReg(op2);
+            res.push_back("move "+rg1+","+rg2);
             break;
-            // int a = b + c;
-
-            // add rg1, rg2, rg3
-            // move rg4, rg1
-
-            //         VAR
-            //       /  |  \
-            //   type name   SUM
-            //              .........
         }
         LESS: {
-            std::string op1 = cfg->getOp1();
-            std::string op2 = cfg->getOp2();
-            std::string rg1 = "";//mapReg(op1);
-            std::string rg2 = "";//mapReg(op2);
-            res = "less "+rg1+","+rg2;
+            std::string op1 = genExpression(curr_ast.children[0]);
+            std::string op2 = genExpression(curr_ast.children[1]);
+            std::string rg1 = mapReg(op1);
+            std::string rg2 = mapReg(op2);
+            res.push_back("less "+rg1+","+rg2);
             break;
         }
     }
@@ -122,7 +104,36 @@ Parse::Parse(std::vector<CFG*> c){
             default: { b = BLOCK(cfg);}
         }
         for(std::string str: b) ;//f.fwrite(str);
-    }    
+    }   
+}
 
-    // linker
+std::string Parse::genExpression(AST expr, block& steps){
+  
+    switch (expr.getType()){
+            case LIT:{return expr.getValue();}
+            case VAR_REF:{
+                return mapReg(expr.getValue());
+            }
+            case SUM:
+            case ASSIGN:
+            case SUB:
+            case MUL:
+            case DIV:
+            case LESS:
+            case MORE:
+            case CMP:{
+                std::string left = genExpression(expr.children[0], steps);
+                std::string right = genExpression(expr.children[1], steps);
+                std::string rg =  
+                steps.push_back()  
+                
+                return mapReg(left.getValue() + ", " + right.getValue());
+            }
+            default:{
+                throw std::runtime_error("incorrect expression in PARSE.");
+                break;
+            }
+            
+        }
+ 
 }

@@ -94,3 +94,6 @@ void AST::setValue(std::string inside){
 std::string AST::getEnumName(oper_type type){
     return AST::enum_names.at(type);
 }
+TokenType AST::getDataType(){
+    return this->dataType;
+}

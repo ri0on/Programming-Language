@@ -72,6 +72,7 @@ class AST{
         AST();
         oper_type getType();
         void setType(oper_type type);
+        TokenType getDataType();
         void setDataType(TokenType type);
         std::string getValue();
         void setValue(std::string inside);

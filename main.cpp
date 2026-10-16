@@ -69,3 +69,22 @@ int main(){
 
 
 
+/*
+code
+ ↓
+Lexer
+ ↓
+AST
+ ↓
+IRBuilder
+ ↓
+IR
+ ↓
+CFG
+ ↓
+CodeGen
+ ↓
+Assembly
+
+
+*/

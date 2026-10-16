@@ -10,8 +10,18 @@ VOID main():{
     }
     While(a < b):{
         a = b*3-2+a/c;
-        sb: a;
     }
+
+
+    INT t = 10;
+    While (c < t):{
+        If(c-t == a):{
+            sb: c-t+a;
+        } Else:{}
+        c = c + 1;
+    }
+
+
     sb: c;
 }
 

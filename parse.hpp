@@ -10,14 +10,14 @@ class Parse{
         jump//...
     };
 
-    std::vector<std::pair<instr_type, std::string>> dict;
+    static const std::map<instr_type, std::string> instr_dict;
 
     // struct instr{
     //     enum instr_type type;
     //     std::vector<std::string> operands;
     // };
     typedef std::vector<std::string> block;
-
+    std::string genExpression(AST expr, block& steps);
     static int counter;
     static std::map<std::string, std::string> regs;
     static std::string regInc();
